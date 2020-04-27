@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'user.dart';
+import 'output.dart';
+
+
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
 
@@ -64,21 +69,17 @@ class MyApp extends StatelessWidget {
     Widget textSection = Container(
       padding: const EdgeInsets.all(32),
       child: Text(
-        'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-            'Alps. Situated 1,578 meters above sea level, it is one of the '
-            'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-            'half-hour walk through pastures and pine forest, leads you to the '
-            'lake, which warms to 20 degrees Celsius in the summer. Activities '
-            'enjoyed here include rowing, and riding the summer toboggan run.',
+        'Please fill out this form as accurately as possible while waiting  '
+            'for your turn in the que. Once complete, push submit ',
         softWrap: true,
       ),
     );
 
     return MaterialApp(
-      title: 'Flutter layout demo',
+      title: 'CBAC Demo App',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Flutter layout demo'),
+          title: Text('CBAC Demo App'),
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -236,6 +237,10 @@ class MyCustomFormState extends State<MyCustomForm> {
               // Validate returns true if the form is valid, otherwise false.
               if (_formKey.currentState.validate()) {
                 print(_user.lastName);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GenerateScreen(user: _user)),
+                );
                 // If the form is valid, display a snackbar. In the real world,
                 // you'd often call a server or save the information in a database.
 
@@ -252,19 +257,3 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 }
 
-
-class User {
-  // static const String Cough = 'cough';
-  // static const String Fever = 'fever';
-
-  String firstName = '';
-  String lastName = '';
-  Map symptoms = {
-    "cough": false,
-    "fever": false,
-  };
-  bool newsletter = false;
-  save() {
-    print('saving user using a web service');
-  }
-}
