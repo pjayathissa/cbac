@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'dart:async';
+import 'package:flutter/services.dart';
+
 import 'user.dart';
 import 'output.dart';
 
@@ -28,14 +31,14 @@ class MyApp extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    'Oeschinen Lake Campground',
+                    'Community Based Assessment Center',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 Text(
-                  'Kandersteg, Switzerland',
+                  'North Shore, Auckland',
                   style: TextStyle(
                     color: Colors.grey[500],
                   ),
@@ -48,7 +51,7 @@ class MyApp extends StatelessWidget {
             Icons.star,
             color: Colors.red[500],
           ),
-          Text('41'),
+          Text('Waiting: 41'),
         ],
       ),
     );
@@ -66,15 +69,6 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-    Widget textSection = Container(
-      padding: const EdgeInsets.all(32),
-      child: Text(
-        'Please fill out this form as accurately as possible while waiting  '
-            'for your turn in the que. Once complete, push submit ',
-        softWrap: true,
-      ),
-    );
-
     return MaterialApp(
       title: 'CBAC Demo App',
       home: Scaffold(
@@ -84,15 +78,14 @@ class MyApp extends StatelessWidget {
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
           children: [
-            Image.asset(
-              'assets/lake.jpg',
-              width: 600,
-              height: 240,
-              fit: BoxFit.cover,
-            ),
+            // Image.asset(
+            //   'assets/heart.png',
+            //   width: 600,
+            //   height: 240,
+            //   //fit: BoxFit.cover,
+            // ),
             titleSection,
-            buttonSection,
-            textSection,
+            //buttonSection,
             MyCustomForm(),
           ],
         ),
@@ -169,43 +162,48 @@ class MyCustomFormState extends State<MyCustomForm> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
 
+    Widget myTextSection = Container(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Text(
+
+        'Please fill out this form as accurately as possible while waiting  '
+            'for your turn in the queue. Once complete, push submit ',
+        softWrap: true,
+      ),
+    );
+
     return Form(
       key: _formKey,
       child: Column(
         children: <Widget>[
 
-          TextFormField(
-            controller: myController,
-            autofocus: true,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Enter your first name',
-              labelText: 'First Name',
-            ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-            onChanged: (value) => setState(() => _user.firstName = value),
-          ),
+          myTextSection,
+          CustomTextInput(user: _user, 
+                          detailAttribute: 'firstName',
+                          myHintText: "Enter your first name", 
+                          myLabelText: "First Name",
+                          ),
+          CustomTextInput(user: _user, 
+                          detailAttribute: 'lastName',
+                          myHintText: "Enter your last name", 
+                          myLabelText: "Last Name",
+                          ),
+          CustomTextInput(user: _user, 
+                          detailAttribute: 'street',
+                          myHintText: "17 Example Street", 
+                          myLabelText: "Street",
+                          ),
+          CustomTextInput(user: _user, 
+                          detailAttribute: 'city',
+                          myHintText: "Auckland", 
+                          myLabelText: "Town / City",
+                          ),
+          CustomTextInput(user: _user, 
+                          detailAttribute: 'postCode',
+                          myHintText: "0000", 
+                          myLabelText: "Post Code",
+                          ),
 
-          TextFormField(
-            autofocus: true,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Enter your last name',
-              labelText: 'Last Name',
-            ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-            onChanged: (value) => setState(() => _user.lastName = value),
-          ),
 
           Container(
             padding: const EdgeInsets.all(32),
@@ -213,21 +211,48 @@ class MyCustomFormState extends State<MyCustomForm> {
               'Symptoms',
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+            Flexible(
+              child: CheckboxListTile(
+                title: const Text('Cough'),
+                value: _user.symptoms["cough"],
+                onChanged: (val) {
+                  setState(() =>
+                      _user.symptoms["cough"] = val);
+                }
+                ),
+              ),
+              Flexible(
+                child: CheckboxListTile(
+                  title: const Text('Fever'),
+                  value: _user.symptoms["fever"],
+                  onChanged: (val) {
+                    setState(() =>
+                        _user.symptoms["fever"] = val);
+                  }
+                ),
+              ),
+              Flexible(
+                child: CheckboxListTile(
+                  title: const Text('Fever'),
+                  value: _user.symptoms["fever"],
+                  onChanged: (val) {
+                    setState(() =>
+                        _user.symptoms["fever"] = val);
+                  }
+                ),
+              ),
+            ]
+          ),
 
           CheckboxListTile(
-            title: const Text('Cough'),
-            value: _user.symptoms["cough"],
+            title: const Text('TODO: Add more checkboxes'),
+            value: _user.symptoms["other"],
             onChanged: (val) {
               setState(() =>
-                  _user.symptoms["cough"] = val);
-            }
-          ),
-          CheckboxListTile(
-            title: const Text('Fever'),
-            value: _user.symptoms["fever"],
-            onChanged: (val) {
-              setState(() =>
-                  _user.symptoms["fever"] = val);
+                  _user.symptoms["other"] = val);
             }
           ),
 
@@ -244,9 +269,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                 // If the form is valid, display a snackbar. In the real world,
                 // you'd often call a server or save the information in a database.
 
-                Scaffold
-                    .of(context)
-                    .showSnackBar(SnackBar(content: Text("Submitted: " + myController.text)));
+                // Scaffold
+                //     .of(context)
+                //     .showSnackBar(SnackBar(content: Text("Submitted: " + myController.text)));
               }
             },
             child: Text('Submit'),
@@ -257,3 +282,56 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 }
 
+
+
+class CustomTextInput extends StatefulWidget {
+  
+  CustomTextInput({Key key, 
+                    @required this.detailAttribute,
+                    @required this.user, 
+                    @required this.myHintText, 
+                    @required this.myLabelText}) : super(key: key);
+  final User user;
+  final myHintText;
+  final myLabelText;
+  final detailAttribute;
+
+  @override
+  _CustomTextInputState createState() => _CustomTextInputState(user, myHintText, myLabelText, detailAttribute);
+}
+
+class _CustomTextInputState extends State<CustomTextInput> {
+  
+  // final myLabelText;
+  final User user;
+  final String myHintText;
+  final String myLabelText;
+  final String detailAttribute;
+  _CustomTextInputState(this.user, this.myHintText, this.myLabelText, this.detailAttribute);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: TextFormField(
+            autofocus: true,
+            decoration: InputDecoration(
+              border: new OutlineInputBorder(
+                            borderRadius: new BorderRadius.circular(25.0),
+                            borderSide: new BorderSide(
+                            ),
+                          ),
+              hintText: myHintText,
+              labelText: myLabelText,
+            ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            onChanged: (value) => setState(() => user.userDetails[detailAttribute] = value),
+    ),
+    );
+  }
+}

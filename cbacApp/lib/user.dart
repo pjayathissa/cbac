@@ -4,9 +4,20 @@ class User {
 
   String firstName = 'placeholder';
   String lastName = 'placeholder';
+  String address = 'placeholder';
+  String postCode = 'placeholder';
   Map symptoms = {
-    "cough": false,
-    "fever": false,
+    'cough': false,
+    'fever': false,
+    'other': false,
+  };
+
+  Map userDetails = {
+    'firstName': 'placeholder',
+    'lastName': 'placeholder',
+    'street': 'placeholder',
+    'city': 'placeholder',
+    'postCode': 'placeholder',
   };
   bool newsletter = false;
   save() {
