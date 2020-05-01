@@ -70,6 +70,23 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'CBAC Demo App',
+      theme: ThemeData(
+        // Define the default brightness and colors.
+        // brightness: Brightness.dark,
+        primaryColor: Color(0xff15c3a5),
+        // accentColor: Colors.cyan[600],
+
+        // Define the default font family.
+        //fontFamily: 'Georgia',
+
+        // Define the default TextTheme. Use this to specify the default
+        // text styling for headlines, titles, bodies of text, and more.
+        // textTheme: TextTheme(
+        //   headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+        //   title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+        //   body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+        // ),
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: Text('CBAC Demo App'),
@@ -143,8 +160,8 @@ class MyCustomFormState extends State<MyCustomForm> {
       final DateTime picked = await showDatePicker(
           context: context,
           initialDate: selectedDate,
-          firstDate: DateTime(2015, 8),
-          lastDate: DateTime(2101));
+          firstDate: DateTime.now().subtract(new Duration(days: 15)),
+          lastDate: DateTime.now());
       if (picked != null && picked != selectedDate)
         setState(() {
           selectedDate = picked;
@@ -152,29 +169,24 @@ class MyCustomFormState extends State<MyCustomForm> {
         });
     }
 
-  Widget checkbox2(String title, String key) {
-      return Flexible(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(title),
-            Checkbox(
-              value: _user.symptoms[key],
-              onChanged: (val) {
-                        setState(() =>
-                            _user.symptoms[key] = val);
-                }
-            )
-          ],
-        ),
-      );
-    }
-
   Widget checkbox(String title, String key) {
     return Flexible(
                   child: Ink(
-                    color: _user.symptoms[key] ? Color(0xff15c3a5) : Color(0xfff8f8f8),
+                    decoration: BoxDecoration(
+                      color: _user.symptoms[key] ? Color(0xff15c3a5) : Color(0xfff8f8f8),
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                // boxShadow: [
+                                  // BoxShadow(
+
+                                  //     color: Color(0xffA22447).withOpacity(.05),
+                                  //     offset: Offset(1, 1),
+                                  //     blurRadius: 2,
+                                  //     spreadRadius: 1
+                                  // )]
+                            ),
+                    
                     child: CheckboxListTile(
+
                     title: Text(
                       title,
                       style: DefaultTextStyle.of(context).style.apply(
