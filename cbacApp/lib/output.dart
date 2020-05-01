@@ -91,7 +91,9 @@ class GenerateScreenState extends State<GenerateScreen> {
               First Name: ${widget.user.userDetails['firstName']}
               Last Name ${widget.user.userDetails['lastName']}
               Address: ${widget.user.userDetails['street']}, ${widget.user.userDetails['city']}
-              PostCode: ${widget.user.userDetails['postCode']}''',
+              PostCode: ${widget.user.userDetails['postCode']}
+              Symptoms: ${widget.user.symptoms}
+              Travel History: ${widget.user.travelValue}''',
               textAlign: TextAlign.left,
             ),
           ),

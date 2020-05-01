@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'user.dart';
 import 'output.dart';
 
-
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
 
@@ -134,8 +133,65 @@ class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   final _user = User();
 
+
   //controller for controlling the output
   final myController = TextEditingController();
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<Null> _selectDate(BuildContext context) async {
+      final DateTime picked = await showDatePicker(
+          context: context,
+          initialDate: selectedDate,
+          firstDate: DateTime(2015, 8),
+          lastDate: DateTime(2101));
+      if (picked != null && picked != selectedDate)
+        setState(() {
+          selectedDate = picked;
+          _user.travelDate = picked;
+        });
+    }
+
+  Widget checkbox2(String title, String key) {
+      return Flexible(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(title),
+            Checkbox(
+              value: _user.symptoms[key],
+              onChanged: (val) {
+                        setState(() =>
+                            _user.symptoms[key] = val);
+                }
+            )
+          ],
+        ),
+      );
+    }
+
+  Widget checkbox(String title, String key) {
+    return Flexible(
+                  child: Ink(
+                    color: _user.symptoms[key] ? Color(0xff15c3a5) : Color(0xfff8f8f8),
+                    child: CheckboxListTile(
+                    title: Text(
+                      title,
+                      style: DefaultTextStyle.of(context).style.apply(
+                        fontSizeFactor: 1.0,
+                        color: _user.symptoms[key] ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    activeColor: Color(0xffBEEDE4),
+                    value: _user.symptoms[key],
+                    onChanged: (val) {
+                      setState(() =>
+                          _user.symptoms[key] = val);
+                    }
+                  ),
+                ),
+              );
+}
 
   @override
   void initState() {
@@ -155,7 +211,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   // Function to print latest form value
   printLatestValue() {
-  print("First Name text field: ${myController.text}");
+  print('First Name text field: ${myController.text}');
   }
 
   @override
@@ -180,33 +236,43 @@ class MyCustomFormState extends State<MyCustomForm> {
           myTextSection,
           CustomTextInput(user: _user, 
                           detailAttribute: 'firstName',
-                          myHintText: "Enter your first name", 
-                          myLabelText: "First Name",
+                          myHintText: 'Enter your first name', 
+                          myLabelText: 'First Name',
                           ),
           CustomTextInput(user: _user, 
                           detailAttribute: 'lastName',
-                          myHintText: "Enter your last name", 
-                          myLabelText: "Last Name",
+                          myHintText: 'Enter your last name', 
+                          myLabelText: 'Last Name',
                           ),
           CustomTextInput(user: _user, 
                           detailAttribute: 'street',
-                          myHintText: "17 Example Street", 
-                          myLabelText: "Street",
+                          myHintText: '17 Example Street', 
+                          myLabelText: 'Street',
                           ),
           CustomTextInput(user: _user, 
                           detailAttribute: 'city',
-                          myHintText: "Auckland", 
-                          myLabelText: "Town / City",
+                          myHintText: 'Auckland', 
+                          myLabelText: 'Town / City',
                           ),
           CustomTextInput(user: _user, 
                           detailAttribute: 'postCode',
-                          myHintText: "0000", 
-                          myLabelText: "Post Code",
+                          myHintText: '0000', 
+                          myLabelText: 'Post Code',
+                          ),
+          CustomTextInput(user: _user, 
+                          detailAttribute: 'email',
+                          myHintText: 'example@gmail.com', 
+                          myLabelText: 'Email Address',
+                          ),
+          CustomTextInput(user: _user, 
+                          detailAttribute: 'phoneNumber',
+                          myHintText: 'home, mobile, or relative\'s', 
+                          myLabelText: 'Phone Number',
                           ),
 
 
           Container(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.only(top: 16),
             child: Text(
               'Symptoms',
             ),
@@ -214,47 +280,106 @@ class MyCustomFormState extends State<MyCustomForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-            Flexible(
-              child: CheckboxListTile(
-                title: const Text('Cough'),
-                value: _user.symptoms["cough"],
-                onChanged: (val) {
-                  setState(() =>
-                      _user.symptoms["cough"] = val);
-                }
-                ),
-              ),
-              Flexible(
-                child: CheckboxListTile(
-                  title: const Text('Fever'),
-                  value: _user.symptoms["fever"],
-                  onChanged: (val) {
-                    setState(() =>
-                        _user.symptoms["fever"] = val);
-                  }
-                ),
-              ),
-              Flexible(
-                child: CheckboxListTile(
-                  title: const Text('Fever'),
-                  value: _user.symptoms["fever"],
-                  onChanged: (val) {
-                    setState(() =>
-                        _user.symptoms["fever"] = val);
-                  }
-                ),
-              ),
+            checkbox('Cough','cough'),
+            checkbox('Fever','fever'),
+
+
             ]
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+            checkbox('Sore Throat','soreThroat'),
+            checkbox('Runny Nose','coryza'),
 
-          CheckboxListTile(
-            title: const Text('TODO: Add more checkboxes'),
-            value: _user.symptoms["other"],
-            onChanged: (val) {
-              setState(() =>
-                  _user.symptoms["other"] = val);
-            }
+
+            ]
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+            checkbox('Shortness of Breath','breath'),
+            checkbox('Loss of smell','anosmia'),
+            
+
+            ]
+          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: <Widget>[
+          //   checkbox('Other','other'),
+          //   ]
+          // ),
+          Container(
+            padding: const EdgeInsets.only(top: 16),
+            child: Text(
+              'Other Symnptoms',
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+            checkbox('Diarrhoea','diarrhoea'),
+            checkbox('Headache','headache'),
+            ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+            checkbox('Muscle Pain','myalgia'),
+            checkbox('Confusion','confusion'),
+            ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+            checkbox('Nausea','nausea'),
+            ]
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 16),
+            child: Text(
+              'Have you travelled overseas or been in contact with someone who was overseas in the past 14 days',
+            ),
+          ),
+
+          Column(
+                children: _user.travelOptions.map((travelValue) => Ink(
+                    color: _user.travelValue == travelValue['key'] ? Color(0xff15c3a5) : Color(0xfff8f8f8),
+                    child: RadioListTile(
+                    groupValue: _user.travelValue,
+                    title: Text(
+                      travelValue['title'],
+                      style: DefaultTextStyle.of(context).style.apply(
+                        fontSizeFactor: 1.0,
+                        color: _user.travelValue == travelValue['key'] ? Colors.white : Colors.black,
+                        )),
+                    value: travelValue['key'],
+                    activeColor: Color(0xffBEEDE4),
+                    onChanged: (val) {
+                        setState(() {
+                            debugPrint('VAL = $val');
+                            _user.travelValue = val;
+                            if (val == 'yes') {
+                              _selectDate(context);
+                            }
+                        });
+                    },
+                ))).toList(),
+          ),
+          if (_user.travelValue == 'yes') Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("Arrival / Contact Date:  ${selectedDate.day} / ${selectedDate.month} / ${selectedDate.year}  "),
+            SizedBox(height: 20.0,),
+            RaisedButton(
+              onPressed: () => _selectDate(context),
+              child: Text('Change date'),
+            ),
+          ],
+        ),
+
+            
 
 
           RaisedButton(
@@ -271,7 +396,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 
                 // Scaffold
                 //     .of(context)
-                //     .showSnackBar(SnackBar(content: Text("Submitted: " + myController.text)));
+                //     .showSnackBar(SnackBar(content: Text('Submitted: ' + myController.text)));
               }
             },
             child: Text('Submit'),
@@ -324,12 +449,12 @@ class _CustomTextInputState extends State<CustomTextInput> {
               hintText: myHintText,
               labelText: myLabelText,
             ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+            // validator: (value) {
+            //   if (value.isEmpty) {
+            //     return 'Please enter some text';
+            //   }
+            //   return null;
+            // },
             onChanged: (value) => setState(() => user.userDetails[detailAttribute] = value),
     ),
     );
