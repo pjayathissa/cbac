@@ -4,6 +4,7 @@ import 'login_page.dart';
 import 'authentication.dart';
 import 'home_page.dart';
 
+// keep track of the authentication state
 enum AuthStatus {
   NOT_DETERMINED,
   NOT_LOGGED_IN,
@@ -64,6 +65,7 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
+  // go to login or home page depending on logged status
   @override
   Widget build(BuildContext context) {
     switch (authStatus) {

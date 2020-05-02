@@ -3,26 +3,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'authentication.dart';
 
+//based on https://medium.com/flutter/must-try-use-firebase-to-host-your-flutter-app-on-the-web-852ee533a469
+
 class LoginPage extends StatefulWidget {
   LoginPage({this.auth, this.loginCallback});
   final BaseAuth auth;
   final VoidCallback loginCallback;
 
   @override
-  _LoginPageState createState() => _LoginPageState(auth, loginCallback);
+  State<StatefulWidget> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  
-  // final myLabelText;
-  final BaseAuth auth;
-  final VoidCallback loginCallback;
-  _LoginPageState(this.auth, this.loginCallback);
 
   final _formKey = new GlobalKey<FormState>();
-
-
-
 
   String _email;
   String _password;
@@ -30,6 +24,8 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isLoginForm;
   bool _isLoading;
+
+  bool _fool;
 
   // Check if form is valid before perform login or signup
   bool validateAndSave() {
@@ -41,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
-    // Perform login or signup
+  // Perform login or signup
   void validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
@@ -52,15 +48,13 @@ class _LoginPageState extends State<LoginPage> {
       try {
         if (_isLoginForm) {
           debugPrint(_email);
-          AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-          userId = result.user.uid;
-          //userId = await widget.auth.signIn(_email, _password);
+          //AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
+          //userId = result.user.uid;
+          userId = await widget.auth.signIn(_email, _password);
           print('Signed in: $userId');
         } else {
           debugPrint('not user??');
           userId = await widget.auth.signUp(_email, _password);
-          //widget.auth.sendEmailVerification();
-          //_showVerifyEmailSentDialog();
           print('Signed up user: $userId');
         }
         setState(() {
@@ -69,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
 
         if (userId.length > 0 && userId != null && _isLoginForm) {
           debugPrint('logged in I think');
-          //widget.loginCallback();
+          widget.loginCallback();
         }
       } catch (e) {
         print('Error: $e');
@@ -82,11 +76,12 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-   @override
+  @override
   void initState() {
     _errorMessage = "";
     _isLoading = false;
     _isLoginForm = true;
+    _fool = false;
     super.initState();
   }
 
@@ -94,8 +89,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Flutter login demo"),
+        title: Text("Clinician Side CBAC App"),
       ),
+      // Stack allows widgets to be displayed on top of each other
       body: Stack(
         children: <Widget>[
           showForm(),
@@ -120,6 +116,7 @@ Widget showForm() {
               showPrimaryButton(),
               showSecondaryButton(),
               showErrorMessage(),
+              if (_fool) foolishTook(),
             ],
           ),
         ));
@@ -196,7 +193,7 @@ Widget showForm() {
             elevation: 5.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0)),
-            color: Colors.blue,
+            color: Theme.of(context).primaryColor,
             child: Text(_isLoginForm ? 'Login' : 'Create account',
                 style: TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: () {
@@ -215,9 +212,17 @@ Widget showForm() {
             _isLoginForm ? 'Forgot Password' : 'Have an account? Sign in',
             style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: () {
-                debugPrint('pressed button');
-                
-                }); //toggleFormMode);
+            debugPrint('pressed button');
+            setState(() {
+              _fool = true;
+            });
+        });
+  }
+
+  Widget foolishTook(){
+      return Text(
+        'You fool of a took!'
+        );
   }
 
   Widget showErrorMessage() {
@@ -236,25 +241,5 @@ Widget showForm() {
       );
     }
   }
-
-  void signIn() async {
-    // if(_formKey.currentState.validate()){
-    //   _formKey.currentState.save();
-    final formState = _formKey.currentState;
-      try{
-        debugPrint('trying');
-        debugPrint(_email);
-        debugPrint(_password);
-        AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                  email: _email, password: _password);
-        FirebaseUser user = result.user;
-        debugPrint(result.user.toString());
-        
-      }catch(e){
-        debugPrint('error catch');
-        print(e.message);
-      }
-    }
-  
 
 }
