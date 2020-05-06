@@ -90,10 +90,10 @@ class GenerateScreenState extends State<GenerateScreen> {
             child: Text('''
               First Name: ${widget.user.userDetails['firstName']}
               Last Name ${widget.user.userDetails['lastName']}
-              Address: ${widget.user.userDetails['street']}, ${widget.user.userDetails['city']}
+              Street: ${widget.user.userDetails['street']}
+              City: ${widget.user.userDetails['city']}
               PostCode: ${widget.user.userDetails['postCode']}
-              Symptoms: ${widget.user.symptoms}
-              Travel History: ${widget.user.travelValue}''',
+              Email: ${widget.user.userDetails['postCode']}''',
               textAlign: TextAlign.left,
             ),
           ),
@@ -103,7 +103,7 @@ class GenerateScreenState extends State<GenerateScreen> {
                 key: globalKey,
                 child: QrImage(
                   data: _dataString,
-                  size: 0.7 * bodyHeight,
+                  size: 1.0 * bodyHeight,
                 ),
               ),
             ),

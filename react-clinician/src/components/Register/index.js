@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Typography, Paper, Avatar, Button, FormControl, Input, InputLabel } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -53,15 +53,8 @@ function Register(props) {
 		postcode: '',
 		email: '',
 		phone: '',
+		nhi: '',
 	})
-	const [firstName, setFirstName] = useState('')
-	const [lastName, setLastName] = useState('')
-	const [street, setStreet] = useState('')
-	const [city, setCity] = useState('')
-	const [postcode, setPostcode] = useState('')
-	const [email, setEmail] = useState('')
-	const [phone, setPhone] = useState('')
-	const [nhi, setNHI] = useState('')
 
 	const [symptoms, setSymptoms] = useState({"cough": false,
 											    "fever": false,
@@ -96,12 +89,52 @@ function Register(props) {
 
 	const [password, setPassword] = useState('')
 
+	// // Similar to componentDidMount and componentDidUpdate:
+	// useEffect(() => {
+	// 	console.log("effect launched")
+		
+	
+ //  });
+
+ 	// need to pass props into useEffect to prevent an infinite loop.
+ 	// https://stackoverflow.com/questions/53715465/can-i-set-state-inside-a-useeffect-hook
+	useEffect(() => {
+			if (props.location.customNameData){
+				//TODO> This is terribly hacky
+				const firstSplit = props.location.customNameData.split('{');
+				var patientData = firstSplit[0].split(',');
+				const patientSymptomsString =  firstSplit[1].split('}')[0].split(',')
+				
+				patientSymptomsString.map(symptom => {
+					//const symptomString = symptom.split(':')
+					let key = symptom.split(':')[0].trim()
+					let val = (symptom.split(':')[1].trim() == 'true')
+					patientSymptoms[key] = val
+				})
+
+				// This syntax is required to prevent an infiite loop
+				setUser(state => ({ ...state, 
+									firstName: patientData[0],
+									lastName: patientData[1],
+									street: patientData[2],
+									city: patientData[3], 
+									postcode: patientData[4],
+									email: patientData[5],
+									phone: patientData[6] 
+								}));
+			}
+	}, [props]);
+
+	console.log(user)
+
 	if(!firebase.getCurrentUsername()) {
 		// not logged in
 		//alert('Please login first')
 		props.history.replace('/')
 		return null
 	}
+
+
 
 	//JSON.parse('{["name", "Skip", "age":2,"favoriteFood":"Steak"]}')
 
@@ -119,31 +152,11 @@ function Register(props) {
 			let val = (symptom.split(':')[1].trim() == 'true')
 			patientSymptoms[key] = val
 		})
-		//setFirstName("test")
-		//console.log(JSON.parse(patientSymptoms))
-
-
-		//var patientData = props.location.customNameData.split(',');
-		//console.log(patientData[6])
-		//setName(patientData[0])
 	}
 
 	const handleSubmit = (event) => {
         const formData = new FormData(event.target);
-        event.preventDefault();
-        for (var [key, value] of formData.entries()) {
-            console.log(key, value);
-            if (key == 'firstName') {
-            	setFirstName(value)
-            } else if (key == 'lastName') {
-            	setLastName(value)
-            }
-
-   //          setUser(prevState => {
-			// 	        		return {...prevState, [key] : value}
-			// })
-        }
-
+        event.preventDefault()
         //console.log(user)
         onRegister()
 
@@ -161,38 +174,54 @@ function Register(props) {
 				<Typography component="h1" variant="h5">
 					Register Patient
        			</Typography>
-				<form className={classes.form} onSubmit= {handleSubmit}> 
+				<form className={classes.form} onSubmit={handleSubmit}> 
 					<FormControl margin="normal" required fullWidth>
 						<InputLabel htmlFor="firstName">First Name</InputLabel>
-						<Input id="firstName" name="firstName" autoComplete="off" autoFocus value={patientData ? props.location.customNameData.split(',')[0] : firstName} onChange={e => setFirstName(e.target.value)} />
+						<Input id="firstName" name="firstName" autoComplete="off" autoFocus value={user.firstName} onChange={e => {
+							const val = e.target.value; 
+							setUser(state => ({ ...state, firstName: val}))}} />
 					</FormControl>
 					<FormControl margin="normal" required fullWidth>
 						<InputLabel htmlFor="lastName">Last Name</InputLabel>
-						<Input id="lastName" name="lastName" autoComplete="off" autoFocus value={patientData ? props.location.customNameData.split(',')[1] : lastName} onChange={e => setLastName(e.target.value)} />
+						<Input id="lastName" name="lastName" autoComplete="off" autoFocus value={user.lastName} onChange={e => {
+							const val = e.target.value; 
+							setUser(state => ({ ...state, lastName: val}))}} />
 					</FormControl>
 					<FormControl margin="normal" required fullWidth>
 						<InputLabel htmlFor="street">Street</InputLabel>
-						<Input id="street" name="street" autoComplete="off" autoFocus value={patientData ? props.location.customNameData.split(',')[2] : street} onChange={e => setStreet(e.target.value)} />
+						<Input id="street" name="street" autoComplete="off" autoFocus value={user.street} onChange={e => {
+							const val = e.target.value; 
+							setUser(state => ({ ...state, street: val}))}} />
 					</FormControl>
 					<FormControl margin="normal" required fullWidth>
 						<InputLabel htmlFor="city">Town/City</InputLabel>
-						<Input id="city" name="city" autoComplete="off" autoFocus value={patientData ? props.location.customNameData.split(',')[3] : city} onChange={e => setCity(e.target.value)} />
+						<Input id="city" name="city" autoComplete="off" autoFocus value={user.city} onChange={e => {
+							const val = e.target.value; 
+							setUser(state => ({ ...state, city: val}))}} />
 					</FormControl>
 					<FormControl margin="normal" required fullWidth>
 						<InputLabel htmlFor="postcode">Post Code</InputLabel>
-						<Input id="postcode" name="postcode" autoComplete="off" autoFocus value={patientData ? props.location.customNameData.split(',')[4] : postcode} onChange={e => setPostcode(e.target.value)} />
+						<Input id="postcode" name="postcode" autoComplete="off" autoFocus value={user.postcode} onChange={e => {
+							const val = e.target.value; 
+							setUser(state => ({ ...state, postcode: val}))}} />
 					</FormControl>
 					<FormControl margin="normal" required fullWidth>
 						<InputLabel htmlFor="email">Email Address</InputLabel>
-						<Input id="email" name="email" autoComplete="off" value={patientData ? props.location.customNameData.split(',')[5] : email} onChange={e => setEmail(e.target.value)}  />
+						<Input id="email" name="email" autoComplete="off" value={user.email} onChange={e => {
+							const val = e.target.value; 
+							setUser(state => ({ ...state, email: val}))}} />
 					</FormControl>
 					<FormControl margin="normal" required fullWidth>
 						<InputLabel htmlFor="phone">Phone Number</InputLabel>
-						<Input id="phone" name="phone" autoComplete="off" value={patientData ? props.location.customNameData.split(',')[6] : phone} onChange={e => setPhone(e.target.value)}  />
+						<Input id="phone" name="phone" autoComplete="off" value={user.phone} onChange={e => {
+							const val = e.target.value; 
+							setUser(state => ({ ...state, phone: val}))}} />
 					</FormControl>
 					<FormControl margin="normal" required fullWidth>
 						<InputLabel htmlFor="nhi">NHI Number</InputLabel>
-						<Input id="nhi" name="nhi" autoComplete="off" value={nhi} onChange={e => setNHI(e.target.value)}  />
+						<Input id="nhi" name="nhi" autoComplete="off" value={user.nhi} onChange={e => {
+							const val = e.target.value; 
+							setUser(state => ({ ...state, nhi: val}))}} />
 						<Button
 						fullWidth
 						variant="contained"
@@ -236,7 +265,6 @@ function Register(props) {
 						fullWidth
 						variant="contained"
 						color="primary"
-						
 						className={classes.submit}>
 						Register
           			</Button>
@@ -270,13 +298,13 @@ function Register(props) {
 
 
 		try {
-			var newUser = {
-				firstName: firstName,
-				lastName: lastName,
-			}
-			console.log(newUser)
-			await firebase.registerPatient(newUser)
-			props.history.replace('/dashboard')
+			console.log(user)
+			await firebase.registerPatient(user)
+			props.history.push({
+		        pathname: '/dashboard',
+		        userData: user,
+		      });
+			//props.history.replace('/dashboard')
 		} catch(error) {
 			alert(error.message)
 		}

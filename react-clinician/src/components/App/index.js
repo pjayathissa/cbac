@@ -5,6 +5,8 @@ import Login from '../Login';
 import Register from '../Register';
 import Dashboard from '../Dashboard';
 import QRCode from '../QRCode';
+import PdfOutput from '../PdfOutput';
+import LabelOutput from '../LabelOutput';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { CssBaseline, CircularProgress } from '@material-ui/core';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -56,6 +58,9 @@ export default function App() {
 					<Route exact path="/register" component={Register} />
 					<Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/qrcode" component={QRCode} />
+          <Route exact path="/pdfoutput" component={PdfOutput} />
+          <Route exact path="/labeloutput" component={LabelOutput} />
+
 				</Switch>
 			</Router>
 		</MuiThemeProvider>

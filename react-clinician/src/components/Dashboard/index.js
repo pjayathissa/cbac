@@ -51,13 +51,12 @@ function Dashboard(props) {
 					<VerifiedUserOutlined />
 				</Avatar>
 				<Typography component="h1" variant="h5">
-					You are logged in with { firebase.getCurrentUsername().email } 
+					Submitted Patient to Database 
 				</Typography>
 				<Typography component="h1" variant="h5">
-					<CircularProgress size={20} />
+					
 				</Typography>
 				<Button
-						type="submit"
 						fullWidth
 						variant="contained"
 						color="primary"
@@ -65,9 +64,16 @@ function Dashboard(props) {
 						to="/qrcode"
 						className={classes.submit}>
 						Go back to Scan
-          			</Button>
+          		</Button>
+          		<Button
+						fullWidth
+						variant="contained"
+						color="primary"
+						onClick = {printLabel}
+						className={classes.submit}>
+						Print Label
+          		</Button>
 				<Button
-					type="submit"
 					fullWidth
 					variant="contained"
 					color="secondary"
@@ -78,6 +84,13 @@ function Dashboard(props) {
 			</Paper>
 		</main>
 	)
+
+	function printLabel() {
+		props.history.push({
+		        pathname: '/labeloutput',
+		        userData: props.location.userData,
+		      });
+	}
 
 	async function logout() {
 		await firebase.logout()
