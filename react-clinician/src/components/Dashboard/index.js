@@ -3,7 +3,7 @@ import { Typography, Paper, Avatar, CircularProgress, Button } from '@material-u
 import VerifiedUserOutlined from '@material-ui/icons/VerifiedUserOutlined'
 import withStyles from '@material-ui/core/styles/withStyles'
 import firebase from '../firebase'
-import { withRouter } from 'react-router-dom'
+import {Link, withRouter } from 'react-router-dom'
 
 const styles = theme => ({
 	main: {
@@ -38,8 +38,8 @@ function Dashboard(props) {
 
 	if(!firebase.getCurrentUsername()) {
 		// not logged in
-		alert('Please login first')
-		props.history.replace('/login')
+		//alert('Please login first')
+		props.history.replace('/')
 		return null
 	}
 
@@ -57,14 +57,15 @@ function Dashboard(props) {
 					<CircularProgress size={20} />
 				</Typography>
 				<Button
-					type="submit"
-					fullWidth
-					variant="contained"
-					color="primary"
-					//onClick={logout}
-					className={classes.submit}>
-					Scan QR Code
-          		</Button>
+						type="submit"
+						fullWidth
+						variant="contained"
+						color="primary"
+						component={Link}
+						to="/qrcode"
+						className={classes.submit}>
+						Go back to Scan
+          			</Button>
 				<Button
 					type="submit"
 					fullWidth

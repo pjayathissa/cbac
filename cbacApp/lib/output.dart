@@ -77,7 +77,7 @@ class GenerateScreenState extends State<GenerateScreen> {
   _contentWidget() {
     final bodyHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).viewInsets.bottom;
     setState((){
-      _dataString = "First Name: " + widget.user.userDetails['firstName'] + ", Last Name: " + widget.user.userDetails['lastName'] + ", Address: " + widget.user.userDetails['street'] + widget.user.userDetails['city'] + widget.user.userDetails['postCode'];
+      _dataString = '''${widget.user.userDetails['firstName']},${widget.user.userDetails['lastName']},${widget.user.userDetails['street']},${widget.user.userDetails['city']},${widget.user.userDetails['postCode']},${widget.user.userDetails['email']},${widget.user.userDetails['phoneNumber']},${widget.user.symptoms},${widget.user.travelValue},''';
       _inputErrorText = null;
     });
     return  Container(

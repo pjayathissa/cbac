@@ -2,8 +2,9 @@ import React, { useState, useEffect} from 'react';
 import './styles.css';
 //import HomePage from '../HomePage';
 import Login from '../Login';
-//import Register from '../Register';
+import Register from '../Register';
 import Dashboard from '../Dashboard';
+import QRCode from '../QRCode';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { CssBaseline, CircularProgress } from '@material-ui/core';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -48,13 +49,13 @@ export default function App() {
 	return firebaseInitialized !== false ? (
 		<MuiThemeProvider theme={theme}>
 			<CssBaseline />
-			<div> som text </div>
 			<Router>
 				<Switch>
 					{/*<Route exact path="/" component={HomePage} /> */}
 					<Route exact path="/" component={Login} />
-					{/* /<Route exact path="/register" component={Register} /> */}
+					<Route exact path="/register" component={Register} />
 					<Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/qrcode" component={QRCode} />
 				</Switch>
 			</Router>
 		</MuiThemeProvider>

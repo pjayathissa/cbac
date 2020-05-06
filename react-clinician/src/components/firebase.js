@@ -1,6 +1,6 @@
 import app from 'firebase/app';
 import 'firebase/auth';
-//import 'firebase/firebase-firestore';
+import 'firebase/firebase-firestore';
 
 
 const firebaseConfig = {
@@ -18,7 +18,7 @@ class Firebase {
 	constructor() {
 		app.initializeApp(firebaseConfig);
 		this.auth = app.auth();
-		//this.db = app.firestore();
+		this.db = app.firestore();
 	}
 
 	async login(email, password) {
@@ -30,6 +30,19 @@ class Firebase {
 		// console.log(this.auth.currentUser)
 		return this.auth.currentUser;
 		
+	}
+
+
+	//TODO: pipe data to secure database
+	registerPatient(user) {
+		if(!this.auth.currentUser) {
+			return alert('Not authorized')
+		}
+		let autoID = this.db.collection('someplace').doc().id;
+		let docRef = this.db.collection('patients').doc(autoID)
+
+		let setUser = docRef.set(user)
+		return setUser
 	}
 
 	logout() {

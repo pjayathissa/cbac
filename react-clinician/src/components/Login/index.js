@@ -28,10 +28,6 @@ const styles = theme => ({
 		margin: theme.spacing(1),
 		backgroundColor: theme.palette.primary.main,
 	},
-	form: {
-		width: '100%', // Fix IE 11 issue.
-		marginTop: theme.spacing(1),
-	},
 	submit: {
 		marginTop: theme.spacing(3),
 	},
@@ -95,7 +91,7 @@ function SignIn(props) {
 		try {
 			await firebase.login(email, password)
 			console.log(firebase.getCurrentUsername())
-			props.history.replace('/dashboard')
+			props.history.replace('/qrcode')
 		} catch(error) {
 			alert(error.message)
 		}
